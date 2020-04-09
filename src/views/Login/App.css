@@ -1,0 +1,49 @@
+.sidebar {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 500px;
+  background: white;
+  padding: 20px;
+  font-size: 15px;
+  padding-top: 100px;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  margin: 20px;
+  color: #000000;
+  z-index: 100;
+  font-size: 2em;
+  cursor: pointer;
+}
+
+.login-form-forgot {
+  float: right;
+}
+
+.login-form-button {
+  width: 100%;
+}
+
+.ant-avatar {
+  width: 100px;
+  height: 100px;
+  line-height: 50px;
+  border-radius: 50%;
+  font-size: 5em !important;
+  left: 40%;
+}
+
+.middle .ant-form-item-control {
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar .ant-form-item {
+  margin: 0;
+}
+
+.sidebar .ant-form-item-control {
+  line-height: 29px;
+}
