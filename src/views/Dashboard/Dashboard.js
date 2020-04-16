@@ -1,6 +1,25 @@
 import React from "react";
 // react plugin for creating charts
-import ChartistGraph from "react-chartist";
+
+import PropTypes from "prop-types";
+import {
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Sector,
+} from "recharts";
+import { scaleOrdinal } from "d3-scale";
+import { schemeCategory10 } from "d3-scale-chromatic";
+
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
@@ -12,10 +31,13 @@ import LocalOffer from "@material-ui/icons/LocalOffer";
 import Update from "@material-ui/icons/Update";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
-import Accessibility from "@material-ui/icons/Accessibility";
-import BugReport from "@material-ui/icons/BugReport";
-import Code from "@material-ui/icons/Code";
+import ReportIcon from "@material-ui/icons/Assessment";
+
+import DashboardIcon from "@material-ui/icons/RateReview";
 import Cloud from "@material-ui/icons/Cloud";
+import People from "@material-ui/icons/People";
+import Money from "@material-ui/icons/AttachMoney";
+import Seller from "@material-ui/icons/Person";
 // core ../../components
 import GridItem from "../../components/Grid/GridItem.js";
 import GridContainer from "../../components/Grid/GridContainer.js";
@@ -39,7 +61,38 @@ import {
 
 import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
+const data = [
+  { name: "Group A", value: 400 },
+  { name: "Group B", value: 300 },
+  { name: "Group C", value: 300 },
+  { name: "Group D", value: 200 },
+];
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
 const useStyles = makeStyles(styles);
+const colors = scaleOrdinal(schemeCategory10).range();
+const getPath = (x, y, width, height) => `M${x},${y + height}
+          C${x + width / 3},${y + height} ${x + width / 2},${y + height / 3} ${
+  x + width / 2
+}, ${y}
+          C${x + width / 2},${y + height / 3} ${x + (2 * width) / 3},${
+  y + height
+} ${x + width}, ${y + height}
+          Z`;
+
+const TriangleBar = (props) => {
+  const { fill, x, y, width, height } = props;
+
+  return <path d={getPath(x, y, width, height)} stroke="none" fill={fill} />;
+};
+
+TriangleBar.propTypes = {
+  fill: PropTypes.string,
+  x: PropTypes.number,
+  y: PropTypes.number,
+  width: PropTypes.number,
+  height: PropTypes.number,
+};
 
 export default function Dashboard() {
   const classes = useStyles();
@@ -50,14 +103,12 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
-                <Icon>content_copy</Icon>
+                <People />
               </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
-              <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
-              </h3>
+              <p className={classes.cardCategory}>Total Customer</p>
+              <h3 className={classes.cardTitle}>5000</h3>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <Danger>
                   <Warning />
@@ -66,7 +117,7 @@ export default function Dashboard() {
                   Get more space
                 </a>
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
@@ -75,63 +126,80 @@ export default function Dashboard() {
               <CardIcon color="success">
                 <Store />
               </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <p className={classes.cardCategory}>Total Product</p>
+              <h3 className={classes.cardTitle}>3000</h3>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <DateRange />
                 Last 24 Hours
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="danger" stats icon>
               <CardIcon color="danger">
-                <Icon>info_outline</Icon>
+                <Seller />
               </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
+              <p className={classes.cardCategory}>Total Supplier</p>
               <h3 className={classes.cardTitle}>75</h3>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <LocalOffer />
                 Tracked from Github
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
-                <Accessibility />
+                <Money />
               </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <p className={classes.cardCategory}>Total Sales</p>
+              <h3 className={classes.cardTitle}>245</h3>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <Update />
                 Just Updated
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
       </GridContainer>
       <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
+        <GridItem>
           <Card chart>
             <CardHeader color="success">
-              <ChartistGraph
-                className="ct-chart"
-                data={dailySalesChart.data}
-                type="Line"
-                options={dailySalesChart.options}
-                listener={dailySalesChart.animation}
-              />
+              <LineChart
+                width={400}
+                height={300}
+                data={dailySalesChart}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="pv"
+                  stroke="#f24338"
+                  activeDot={{ r: 8 }}
+                />
+                <Line type="monotone" dataKey="uv" stroke="#2a81ea" />
+              </LineChart>
             </CardHeader>
             <CardBody>
               <h4 className={classes.cardTitle}>Daily Sales</h4>
@@ -149,39 +217,28 @@ export default function Dashboard() {
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="warning">
-              <ChartistGraph
-                className="ct-chart"
-                data={emailsSubscriptionChart.data}
-                type="Bar"
-                options={emailsSubscriptionChart.options}
-                responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                listener={emailsSubscriptionChart.animation}
-              />
-            </CardHeader>
-            <CardBody>
-              <h4 className={classes.cardTitle}>Email Subscriptions</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
+        <GridItem>
           <Card chart>
             <CardHeader color="danger">
-              <ChartistGraph
-                className="ct-chart"
-                data={completedTasksChart.data}
-                type="Line"
-                options={completedTasksChart.options}
-                listener={completedTasksChart.animation}
-              />
+              <PieChart width={400} height={300}>
+                <Pie
+                  data={data}
+                  cx={120}
+                  cy={200}
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {data.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
             </CardHeader>
             <CardBody>
               <h4 className={classes.cardTitle}>Completed Tasks</h4>
@@ -194,50 +251,123 @@ export default function Dashboard() {
             </CardFooter>
           </Card>
         </GridItem>
-      </GridContainer>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={6}>
+        <GridItem>
+          <Card chart>
+            <CardHeader color="warning">
+              <BarChart
+                width={400}
+                height={300}
+                data={dailySalesChart}
+                margin={{
+                  top: 20,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="uv" />
+                <YAxis />
+                <Bar
+                  dataKey="pv"
+                  fill="#8884d8"
+                  shape={<TriangleBar />}
+                  label={{ position: "top" }}
+                >
+                  {dailySalesChart.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={colors[index % 20]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </CardHeader>
+            <CardBody>
+              <h4 className={classes.cardTitle}>Best Sale Product</h4>
+            </CardBody>
+            <CardFooter chart>
+              <div className={classes.stats}>
+                <AccessTime /> 2020 April
+              </div>
+            </CardFooter>
+          </Card>
+        </GridItem>
+        <GridItem>
           <CustomTabs
-            title="Tasks:"
+            title="Report"
             headerColor="primary"
             tabs={[
               {
-                tabName: "Bugs",
-                tabIcon: BugReport,
+                tabName: "Today's Overview",
+                tabIcon: DashboardIcon,
                 tabContent: (
-                  <Tasks
-                    checkedIndexes={[0, 3]}
-                    tasksIndexes={[0, 1, 2, 3]}
-                    tasks={bugs}
-                  />
+                  <Card>
+                    <CardHeader color="warning">
+                      <p className={classes.cardCategoryWhite}>
+                        Report on 15th April, 2020
+                      </p>
+                    </CardHeader>
+                    <CardBody>
+                      <Table
+                        tableHeaderColor="info"
+                        tableHead={[
+                          "Total Sales",
+                          "Total Purchase",
+                          "Last Sales",
+                        ]}
+                        tableData={[["$10000", "$99866", "$45"]]}
+                      />
+                    </CardBody>
+                  </Card>
                 ),
               },
               {
-                tabName: "Website",
-                tabIcon: Code,
+                tabName: "Today's Sales Report",
+                tabIcon: ReportIcon,
                 tabContent: (
-                  <Tasks
-                    checkedIndexes={[0]}
-                    tasksIndexes={[0, 1]}
-                    tasks={website}
-                  />
-                ),
-              },
-              {
-                tabName: "Server",
-                tabIcon: Cloud,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[1]}
-                    tasksIndexes={[0, 1, 2]}
-                    tasks={server}
-                  />
+                  <Card>
+                    <CardHeader color="warning">
+                      <p className={classes.cardCategoryWhite}>
+                        Report on 15th April, 2020
+                      </p>
+                    </CardHeader>
+                    <CardBody>
+                      <Table
+                        tableHeaderColor="warning"
+                        tableHead={[
+                          "ID",
+                          "Customer Name",
+                          "Invoice No",
+                          "Total Amount",
+                          "Paid Amount",
+                        ]}
+                        tableData={[
+                          ["1", "Dakota Rice", "45", "$36,738", "$36,738"],
+                          ["2", "Minerva Hooper", "466", "$23,789", "$23,789"],
+                          [
+                            "3",
+                            "Sage Rodriguez",
+                            "34546",
+                            "$56,142",
+                            "$56,142",
+                          ],
+                          [
+                            "4",
+                            "Philip Chaney",
+                            "890890",
+                            "$38,735",
+                            "$38,735",
+                          ],
+                        ]}
+                      />
+                    </CardBody>
+                  </Card>
                 ),
               },
             ]}
           />
         </GridItem>
-        <GridItem xs={12} sm={12} md={6}>
+      </GridContainer>
+
+      {/* <GridItem xs={12} sm={12} md={6}>
           <Card>
             <CardHeader color="warning">
               <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
@@ -258,8 +388,7 @@ export default function Dashboard() {
               />
             </CardBody>
           </Card>
-        </GridItem>
-      </GridContainer>
+        </GridItem> */}
     </div>
   );
 }
